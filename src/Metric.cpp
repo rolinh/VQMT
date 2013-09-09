@@ -30,6 +30,11 @@ Metric::Metric(int h, int w)
 	width = w;
 }
 
+Metric::~Metric()
+{
+
+}
+
 void Metric::applyGaussianBlur(const cv::Mat& src, cv::Mat& dst, int ksize, double sigma)
 {
 	int invalid = (ksize-1)/2;

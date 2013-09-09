@@ -32,6 +32,7 @@
 class Metric {
 public:
 	Metric(int height, int width);
+	virtual ~Metric();
 	virtual float compute(const cv::Mat& original, const cv::Mat& processed) = 0;
 protected:
 	int height;

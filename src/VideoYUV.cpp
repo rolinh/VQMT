@@ -102,13 +102,13 @@ bool VideoYUV::readOneFrame()
 	return true;
 }
 
-void VideoYUV::getLuma(cv::Mat& luma, int type)
+void VideoYUV::getLuma(cv::Mat& local_luma, int type)
 {
 	cv::Mat tmp(height, width, CV_8UC1, this->luma);
 	if (type == CV_8UC1) {
-		tmp.copyTo(luma);
+		tmp.copyTo(local_luma);
 	}
 	else {
-		tmp.convertTo(luma, type);
+		tmp.convertTo(local_luma, type);
 	}
 }

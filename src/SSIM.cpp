@@ -51,47 +51,47 @@ float SSIM::compute(const cv::Mat& original, const cv::Mat& processed)
 cv::Scalar SSIM::computeSSIM(const cv::Mat& img1, const cv::Mat& img2)
 {
 
-	int height = img1.rows;
-	int width = img1.cols;
-	int w = width - 10;
-	int h = height - 10;
-	
+	int ht = img1.rows;
+	int wt = img1.cols;
+	int w = wt - 10;
+	int h = ht - 10;
+
 	cv::Mat mu1(h,w,CV_32F), mu2(h,w,CV_32F);
 	cv::Mat mu1_sq(h,w,CV_32F), mu2_sq(h,w,CV_32F), mu1_mu2(h,w,CV_32F);
-	cv::Mat img1_sq(height,width,CV_32F), img2_sq(height,width,CV_32F), img1_img2(height,width,CV_32F);
+	cv::Mat img1_sq(ht,wt,CV_32F), img2_sq(ht,wt,CV_32F), img1_img2(ht,wt,CV_32F);
 	cv::Mat sigma1_sq(h,w,CV_32F), sigma2_sq(h,w,CV_32F), sigma12(h,w,CV_32F);
 	cv::Mat tmp1(h,w,CV_32F), tmp2(h,w,CV_32F), tmp3(h,w,CV_32F);
 	cv::Mat ssim_map(h,w,CV_32F), cs_map(h,w,CV_32F);
-		
+
 	// mu1 = filter2(window, img1, 'valid');
 	applyGaussianBlur(img1, mu1, 11, 1.5);
 
 	// mu2 = filter2(window, img2, 'valid');
 	applyGaussianBlur(img2, mu2, 11, 1.5);
-	
+
 	// mu1_sq = mu1.*mu1;
 	cv::multiply(mu1, mu1, mu1_sq);
 	// mu2_sq = mu2.*mu2;
 	cv::multiply(mu2, mu2, mu2_sq);
 	// mu1_mu2 = mu1.*mu2;
 	cv::multiply(mu1, mu2, mu1_mu2);
-	
+
 	cv::multiply(img1, img1, img1_sq);
 	cv::multiply(img2, img2, img2_sq);
 	cv::multiply(img1, img2, img1_img2);
-	
+
 	// sigma1_sq = filter2(window, img1.*img1, 'valid') - mu1_sq;
 	applyGaussianBlur(img1_sq, sigma1_sq, 11, 1.5);
 	sigma1_sq -= mu1_sq;
-	
+
 	// sigma2_sq = filter2(window, img2.*img2, 'valid') - mu2_sq;
 	applyGaussianBlur(img2_sq, sigma2_sq, 11, 1.5);
 	sigma2_sq -= mu2_sq;
-	
+
 	// sigma12 = filter2(window, img1.*img2, 'valid') - mu1_mu2;
 	applyGaussianBlur(img1_img2, sigma12, 11, 1.5);
 	sigma12 -= mu1_mu2;
-	
+
 	// cs_map = (2*sigma12 + C2)./(sigma1_sq + sigma2_sq + C2);
 	tmp1 = 2*sigma12 + C2;
 	tmp2 = sigma1_sq + sigma2_sq + C2;
@@ -109,6 +109,6 @@ cv::Scalar SSIM::computeSSIM(const cv::Mat& img1, const cv::Mat& img2)
 	double mcs = cv::mean(cs_map).val[0];
 
 	cv::Scalar res(mssim, mcs);
-	
+
 	return res;
 }

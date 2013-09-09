@@ -25,7 +25,7 @@
 /**************************************************************************
 
  Usage:
-  VQMT.exe OriginalVideo ProcessedVideo Height Width NumberOfFrames ChromaFormat Output Metrics 
+  VQMT.exe OriginalVideo ProcessedVideo Height Width NumberOfFrames ChromaFormat Output Metrics
 
   OriginalVideo: the original video as raw YUV video file, progressively scanned, and 8 bits per sample
   ProcessedVideo: the processed video as raw YUV video file, progressively scanned, and 8 bits per sample
@@ -101,17 +101,33 @@ int main (int argc, const char *argv[])
 	// Check number of input parameters
 	if (argc < PARAM_SIZE) {
 		fprintf(stderr, "Check software usage: at least %d parameters are required.\n", PARAM_SIZE);
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
 
-	double duration;
-	duration = static_cast<double>(cv::getTickCount());
+	double duration = static_cast<double>(cv::getTickCount());
 
 	// Input parameters
-	unsigned int height   = atoi(argv[PARAM_HEIGHT]);
-	unsigned int width    = atoi(argv[PARAM_WIDTH]);
-	unsigned int nbframes = atoi(argv[PARAM_NBFRAMES]);
-	unsigned int chroma   = atoi(argv[PARAM_CHROMA]);
+	char *endptr = NULL;
+	int height = static_cast<int>(strtol(argv[PARAM_HEIGHT], &endptr, 10));
+	if (*endptr) {
+		fprintf(stderr, "Incorrect value for video height: %s\n", argv[PARAM_HEIGHT]);
+		return EXIT_FAILURE;
+	}
+	int width = static_cast<int>(strtol(argv[PARAM_WIDTH], &endptr, 10));
+	if (*endptr) {
+		fprintf(stderr, "Incorrect value for video width: %s\n", argv[PARAM_WIDTH]);
+		return EXIT_FAILURE;
+	}
+	int nbframes = static_cast<int>(strtol(argv[PARAM_NBFRAMES], &endptr, 10));
+	if (*endptr) {
+		fprintf(stderr, "Incorrect value for number of frames: %s\n", argv[PARAM_NBFRAMES]);
+		return EXIT_FAILURE;
+	}
+	int chroma = static_cast<int>(strtol(argv[PARAM_CHROMA], &endptr, 10));
+	if (*endptr) {
+		fprintf(stderr, "Incorrect value for chroma: %s\n", argv[PARAM_CHROMA]);
+		return EXIT_FAILURE;
+	}
 
 	// Input video streams
 	VideoYUV *original  = new VideoYUV(argv[PARAM_ORIGINAL], height, width, nbframes, chroma);
@@ -158,7 +174,7 @@ int main (int argc, const char *argv[])
 		fprintf(stderr, "MS-SSIM: 'height' and 'width' have to be multiple of 16.\n");
 		exit(EXIT_FAILURE);
 	}
-	
+
 	// Print header to file
 	for (int m=0; m<METRIC_SIZE; m++) {
 		if (result_file[m] != NULL) {
@@ -171,12 +187,12 @@ int main (int argc, const char *argv[])
 	MSSSIM *msssim = new MSSSIM(height, width);
 	VIFP *vifp     = new VIFP(height, width);
 	PSNRHVS *phvs  = new PSNRHVS(height, width);
-	
+
 	cv::Mat original_frame(height,width,CV_32F), processed_frame(height,width,CV_32F);
 	float result[METRIC_SIZE] = {0};
 	double result_avg[METRIC_SIZE] = {0};
 
-	for (unsigned int frame=0; frame<nbframes; frame++) {
+	for (int frame=0; frame<nbframes; frame++) {
 		// Grab frame
 		if (!original->readOneFrame()) exit(EXIT_FAILURE);
 		original->getLuma(original_frame, CV_32F);
@@ -187,7 +203,7 @@ int main (int argc, const char *argv[])
 		if (result_file[METRIC_PSNR] != NULL) {
 			result[METRIC_PSNR] = psnr->compute(original_frame, processed_frame);
 		}
-		
+
 		// Compute SSIM and MS-SSIM
 		if (result_file[METRIC_SSIM] != NULL && result_file[METRIC_MSSSIM] == NULL) {
 			result[METRIC_SSIM] = ssim->compute(original_frame, processed_frame);
@@ -199,12 +215,12 @@ int main (int argc, const char *argv[])
 			}
 			result[METRIC_MSSSIM] = msssim->getMSSSIM();
 		}
-		
+
 		// Compute VIFp
 		if (result_file[METRIC_VIFP] != NULL) {
 			result[METRIC_VIFP] = vifp->compute(original_frame, processed_frame);
 		}
-		
+
 		// Compute PSNR-HVS and PSNR-HVS-M
 		if (result_file[METRIC_PSNRHVS] != NULL || result_file[METRIC_PSNRHVSM] != NULL) {
 			phvs->compute(original_frame, processed_frame);
@@ -224,7 +240,7 @@ int main (int argc, const char *argv[])
 			}
 		}
 	}
-	
+
 	// Print average quality index to file
 	for (int m=0; m<METRIC_SIZE; m++) {
 		if (result_file[m] != NULL) {

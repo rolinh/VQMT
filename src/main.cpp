@@ -190,7 +190,7 @@ int main (int argc, const char *argv[])
 
 	cv::Mat original_frame(height,width,CV_32F), processed_frame(height,width,CV_32F);
 	float result[METRIC_SIZE] = {0};
-	double result_avg[METRIC_SIZE] = {0};
+	float result_avg[METRIC_SIZE] = {0};
 
 	for (int frame=0; frame<nbframes; frame++) {
 		// Grab frame
@@ -236,7 +236,7 @@ int main (int argc, const char *argv[])
 		for (int m=0; m<METRIC_SIZE; m++) {
 			if (result_file[m] != NULL) {
 				result_avg[m] += result[m];
-				fprintf(result_file[m], "%d,%0.6f\n", frame, result[m]);
+				fprintf(result_file[m], "%d,%.6f\n", frame, static_cast<double>(result[m]));
 			}
 		}
 	}
@@ -244,8 +244,8 @@ int main (int argc, const char *argv[])
 	// Print average quality index to file
 	for (int m=0; m<METRIC_SIZE; m++) {
 		if (result_file[m] != NULL) {
-			result_avg[m] /= double(nbframes);
-			fprintf(result_file[m], "average,%0.6f", result_avg[m]);
+			result_avg[m] /= static_cast<float>(nbframes);
+			fprintf(result_file[m], "average,%.6f", static_cast<double>(result_avg[m]));
 			fclose(result_file[m]);
 		}
 	}

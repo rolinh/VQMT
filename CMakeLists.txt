@@ -71,7 +71,7 @@ else()
 	set(CMAKE_BUILD_TYPE RELEASE CACHE STRING "Build optimized for release")
 endif()
 
-add_definitions(-O2)
+add_definitions(-O2 -std=c++98)
 find_package(OpenCV REQUIRED)
 set(EXECUTABLE_NAME ${CMAKE_PROJECT_NAME})
 set(SRCS

@@ -76,12 +76,12 @@ float PSNRHVS::getPSNRHVSM()
 
 float PSNRHVS::compute(const cv::Mat& original, const cv::Mat& processed)
 {
-	double s1 = 0;
-	double s2 = 0;
-	double num = width*height;
+	float s1 = 0.0f;
+	float s2 = 0.0f;
+	float num = static_cast<float>(width*height);
 	float tmp;
 	cv::Mat a(8,8,CV_32F), b(8,8,CV_32F), a_dct(8,8,CV_32F), b_dct(8,8,CV_32F);
-	
+
 	for (int y=0; y<height; y+=8) {
 		for (int x=0; x<width; x+=8) {
 			// a = img1(y:y+7,x:x+7);
@@ -92,12 +92,12 @@ float PSNRHVS::compute(const cv::Mat& original, const cv::Mat& processed)
 			cv::dct(a, a_dct);
 			// b_dct = dct2(b);
 			cv::dct(b, b_dct);
-			
+
 			// mask_a = maskeff(a,a_dct);
 			float mask_a = maskeff(a,a_dct);
 			// mask_b = maskeff(b,b_dct);
 			float mask_b = maskeff(b,b_dct);
-			
+
 			// if mask_b > mask_a: mask_a = mask_b;
 			mask_a = mask_b > mask_a ? mask_b : mask_a;
 
@@ -130,26 +130,26 @@ float PSNRHVS::compute(const cv::Mat& original, const cv::Mat& processed)
 			}
 		}
 	}
-	
+
 	// s1 = s1/num;
 	s1 /= num;
 	// s2 = s2/num;
 	s2 /= num;
-	
+
 	// if s1 == 0: p_hvs_m = 100000;
 	// else: p_hvs_m = 10*log10(255*255/s1);
 	psnrhvsm = s1 <= FLT_EPSILON ? 100000.0f : float(10*log10(255*255/s1));
 	// if s2 == 0: p_hvs = 100000;
 	// else: p_hvs = 10*log10(255*255/s2);
 	psnrhvs = s2 <= FLT_EPSILON ? 100000.0f : float(10*log10(255*255/s2));
-	
+
 	return psnrhvsm;
 }
 
 float PSNRHVS::maskeff(const cv::Mat &z, const cv::Mat &zdct)
 {
 	float m = 0;
-	
+
 	float val;
 	for (int k=0; k<8; k++) {
 		const float* ptr = zdct.ptr<float>(k);
@@ -159,7 +159,7 @@ float PSNRHVS::maskeff(const cv::Mat &z, const cv::Mat &zdct)
 			if (k!=0 || l!=0) m += val*val*MASK[k][l];
 		}
 	}
-	
+
 	// pop=vari(z);
 	float pop = vari(z);
 	// if pop ~= 0: pop=(vari(z(1:4,1:4))+vari(z(1:4,5:8))+vari(z(5:8,5:8))+vari(z(5:8,1:4)))/pop;
@@ -169,9 +169,9 @@ float PSNRHVS::maskeff(const cv::Mat &z, const cv::Mat &zdct)
 			+vari(z(cv::Range(4,8),cv::Range(4,8)))
 			+vari(z(cv::Range(4,8),cv::Range(0,4)))) / pop;
 	}
-	
+
 	// m = sqrt(m*pop)/32;
-	return sqrt(m*pop)/32.0f;
+	return sqrtf(m*pop)/32.0f;
 }
 
 float PSNRHVS::vari(const cv::Mat &z)

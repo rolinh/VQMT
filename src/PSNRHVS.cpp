@@ -178,11 +178,11 @@ float PSNRHVS::vari(const cv::Mat &z)
 {
 	float mean = 0.0;
 	float d = 0.0;
-	
+
 	int w = z.cols;
 	int h = z.rows;
-	int N = h*w;
-	
+	float N = static_cast<float>(h*w);
+
 	for (int i=0; i<h; i++) {
 		const float *ptr = z.ptr<float>(i);
 		for (int j=0; j<w; j++) {
@@ -193,8 +193,8 @@ float PSNRHVS::vari(const cv::Mat &z)
 	d /= N;
 	mean /= N;
 	d -= mean*mean;
-	d *= N*N/(float)(N-1);
-	
+	d *= N*N/(N-1);
+
 	// d=var(AA(:))*length(AA(:));
 	return d;
 }

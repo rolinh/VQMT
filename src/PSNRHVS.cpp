@@ -39,6 +39,7 @@
 //   Processing and Quality Metrics for Consumer Electronics, January 2007.
 //
 
+#include <cfloat>
 #include "PSNRHVS.hpp"
 
 const float PSNRHVS::CSF[8][8]  =	{{1.608443f, 2.339554f, 2.573509f, 1.608443f, 1.072295f, 0.643377f, 0.504610f, 0.421887f},
@@ -137,10 +138,10 @@ float PSNRHVS::compute(const cv::Mat& original, const cv::Mat& processed)
 	
 	// if s1 == 0: p_hvs_m = 100000;
 	// else: p_hvs_m = 10*log10(255*255/s1);
-	psnrhvsm = s1 == 0 ? 100000.0f : float(10*log10(255*255/s1));
+	psnrhvsm = s1 <= FLT_EPSILON ? 100000.0f : float(10*log10(255*255/s1));
 	// if s2 == 0: p_hvs = 100000;
 	// else: p_hvs = 10*log10(255*255/s2);
-	psnrhvs = s2 == 0 ? 100000.0f : float(10*log10(255*255/s2));
+	psnrhvs = s2 <= FLT_EPSILON ? 100000.0f : float(10*log10(255*255/s2));
 	
 	return psnrhvsm;
 }
@@ -162,7 +163,12 @@ float PSNRHVS::maskeff(const cv::Mat &z, const cv::Mat &zdct)
 	// pop=vari(z);
 	float pop = vari(z);
 	// if pop ~= 0: pop=(vari(z(1:4,1:4))+vari(z(1:4,5:8))+vari(z(5:8,5:8))+vari(z(5:8,1:4)))/pop;
-	if (pop != 0) pop=(vari(z(cv::Range(0,4),cv::Range(0,4)))+vari(z(cv::Range(0,4),cv::Range(4,8)))+vari(z(cv::Range(4,8),cv::Range(4,8)))+vari(z(cv::Range(4,8),cv::Range(0,4))))/pop;
+	if (pop != FLT_EPSILON) {
+		pop = (vari(z(cv::Range(0,4),cv::Range(0,4)))
+			+vari(z(cv::Range(0,4),cv::Range(4,8)))
+			+vari(z(cv::Range(4,8),cv::Range(4,8)))
+			+vari(z(cv::Range(4,8),cv::Range(0,4)))) / pop;
+	}
 	
 	// m = sqrt(m*pop)/32;
 	return sqrt(m*pop)/32.0f;

@@ -89,14 +89,14 @@ bool VideoYUV::readOneFrame()
 
 	for (int j=0; j<3; j++) {
 		int read_size = comp_width[j];
-		if (read_size != 0) {
-			for (int i=0; i<comp_height[j]; i++) {
-				if (read(file, ptr_data, read_size) != read_size) {
-					fprintf(stderr, "readOneFrame: cannot read %d bytes from input file, unexpected EOF.\n", read_size);
-					return false;
-				}
-				ptr_data += read_size;
+		if (read_size <= 0)
+			continue;
+		for (int i=0; i<comp_height[j]; i++) {
+			if (read(file, ptr_data, static_cast<size_t>(read_size)) != read_size) {
+				fprintf(stderr, "readOneFrame: cannot read %d bytes from input file, unexpected EOF.\n", read_size);
+				return false;
 			}
+			ptr_data += read_size;
 		}
 	}
 	return true;

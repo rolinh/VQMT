@@ -5,25 +5,49 @@ This software provides fast implementations of the following objective metrics:
 * PSNR: Peak Signal-to-Noise Ratio,
 * SSIM: Structural Similarity,
 * MS-SSIM: Multi-Scale Structural Similarity,
-* VIFp: Visual Information Fidelity, pixel domain version,
-* PSNR-HVS: Peak Signal-to-Noise Ratio taking into account Contrast Sensitivity 
+* VIFp: Visual Information Fidelity, pixel domain version
+* PSNR-HVS: Peak Signal-to-Noise Ratio taking into account Contrast Sensitivity
   Function (CSF),
 * PSNR-HVS-M: Peak Signal-to-Noise Ratio taking into account Contrast
-  Sensitivity Function (CSF) and between-coefficient contrast masking of DCT 
+  Sensitivity Function (CSF) and between-coefficient contrast masking of DCT
   basis functions.
 
 In this software, the above metrics are implemented in C++ with the help of
-OpenCV and are based on the original Matlab implementations provided by their 
+OpenCV and are based on the original Matlab implementations provided by their
 developers.
-The source code of this software can be compiled on any platform and 
+The source code of this software can be compiled on any platform and
 only requires the OpenCV library (core and imgproc modules).
 This software allows performing video quality assessment without using Matlab
 and shows better performance than Matlab in terms of run time.
 
 # PREREQUISITE
 
-The OpenCV library (http://opencv.willowgarage.com/wiki/) needs to be installed 
+The OpenCV library (http://opencv.willowgarage.com/wiki/) needs to be installed
 to be able to compile this code. Only the core and imgproc modules are required.
+
+# BUILD
+
+CMake is required in order to build VQMT. Here are the required compilation
+steps:
+
+Create the build directory:
+
+	mkdir build
+
+Navigate into it:
+
+	cd build
+
+Run the cmake command to generate a Makefile that works for your operating
+system:
+
+	cmake ..
+
+Now you can use the make command to build the software:
+
+	make
+
+The binary will be placed into a bin  sub-directory.
 
 # USAGE
 

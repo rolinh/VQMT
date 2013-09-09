@@ -27,7 +27,7 @@
 VideoYUV::VideoYUV(const char *f, int h, int w, int nbf, int chroma_format)
 {
 	file = open(f, O_RDONLY | O_BINARY);
-	if (file == NULL) {
+	if (!file) {
 		fprintf(stderr, "readOneFrame: cannot open input file (%s)\n", f);
 		exit(EXIT_FAILURE);
 	}

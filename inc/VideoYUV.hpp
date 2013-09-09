@@ -27,9 +27,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <io.h>
 #include <fcntl.h>
 #include <opencv2/core/core.hpp>
+
+#ifdef _WIN32
+#include <io.h>
+#else /* UNIX... */
+#include <unistd.h>
+#include <sys/io.h>
+// compatibility with UNIX systems as, unlike in Windows, there is no
+// difference between text and binary files: they are just sequence of bytes...
+#define O_BINARY 0
+#endif /* _WIN32 */
 
 typedef unsigned char imgpel;
 
@@ -51,14 +60,14 @@ public:
 	// readOneFrame() needs to be called before getLuma()
 	void getLuma(cv::Mat& luma, int type = CV_8UC1);
 private:
-	int file;			// file stream
+	int file;		// file stream
 	int nbframes;		// number of frames
-	int height;			// height
-	int width;			// width
+	int height;		// height
+	int width;		// width
 	int comp_height[3];	// height in specific component
 	int comp_width[3];	// width in specific component
 
-	int size;			// number of samples
+	int size;		// number of samples
 	int comp_size[3];	// number of samples in specific component
 
 	imgpel *data;		// data array

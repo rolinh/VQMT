@@ -30,12 +30,21 @@
 #include <fcntl.h>
 #include <opencv2/core/core.hpp>
 
+// _WIN32 is also defined in WIN64 environment (why on earth? => backward
+// compatibility the argue). Added this note to remember that this actually
+// includes 64-bit versions of Windows
 #ifdef _WIN32
 #include <io.h>
-#else /* UNIX... */
+#else /* Linux, *BSD, ... */
 #include <unistd.h>
+#endif /* _WIN32 */
+
+#ifdef __linux__
 #include <sys/io.h>
-// compatibility with UNIX systems as, unlike in Windows, there is no
+#endif /* __linux__ */
+
+#ifndef _WIN32
+// compatibility with UNIX systems as, unlike un Windows, there is no
 // difference between text and binary files: they are just sequence of bytes...
 #define O_BINARY 0
 #endif /* _WIN32 */

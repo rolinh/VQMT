@@ -27,27 +27,14 @@ to be able to compile this code. Only the core and imgproc modules are required.
 
 # BUILD
 
-CMake is required in order to build VQMT. Here are the required compilation
-steps:
-
-Create the build directory:
-
-	mkdir build
-
-Navigate into it:
-
-	cd build
-
-Run the cmake command to generate a Makefile that works for your operating
-system:
-
-	cmake ..
-
-Now you can use the make command to build the software:
+CMake is required in order to build VQMT. A Makefile is provided to ease the
+building step:
 
 	make
 
-The binary will be placed into a bin  sub-directory.
+This command has the effect of creating the `build` directory, calling
+`cmake` within it and building VQMT. The binary may then be found in
+`build/bin/Release`.
 
 # USAGE
 
@@ -99,10 +86,10 @@ Notes:
 # COPYRIGHT
 
 Permission is hereby granted, without written agreement and without license or 
-royalty fees, to use, copy, modify, and distribute the software provided and its 
-documentation for research purpose only, provided that this copyright notice and 
+royalty fees, to use, copy, modify, and distribute the software provided and its
+documentation for research purpose only, provided that this copyright notice and
 the original authors' names appear on all copies and supporting documentation.
-The software provided may not be commercially distributed. In no event shall the 
+The software provided may not be commercially distributed. In no event shall the
 Ecole Polytechnique Fédérale de Lausanne (EPFL) be liable to any party for 
 direct, indirect, special, incidental, or consequential damages arising out of 
 the use of the software and its documentation.

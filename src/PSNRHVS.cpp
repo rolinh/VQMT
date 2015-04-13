@@ -163,7 +163,7 @@ float PSNRHVS::maskeff(const cv::Mat &z, const cv::Mat &zdct)
 	// pop=vari(z);
 	float pop = vari(z);
 	// if pop ~= 0: pop=(vari(z(1:4,1:4))+vari(z(1:4,5:8))+vari(z(5:8,5:8))+vari(z(5:8,1:4)))/pop;
-	if (pop != FLT_EPSILON) {
+	if (fabsf(pop) > FLT_EPSILON) {
 		pop = (vari(z(cv::Range(0,4),cv::Range(0,4)))
 			+vari(z(cv::Range(0,4),cv::Range(4,8)))
 			+vari(z(cv::Range(4,8),cv::Range(4,8)))

@@ -26,7 +26,7 @@
 
 VideoYUV::VideoYUV(const char *f, int h, int w, int nbf, int chroma_format)
 {
-	file = open(f, O_RDONLY | O_BINARY);
+	file = fopen(f, "rb");
 	if (!file) {
 		fprintf(stderr, "readOneFrame: cannot open input file (%s)\n", f);
 		exit(EXIT_FAILURE);
@@ -80,7 +80,7 @@ VideoYUV::VideoYUV(const char *f, int h, int w, int nbf, int chroma_format)
 VideoYUV::~VideoYUV()
 {
 	delete[] data;
-	close(file);
+	fclose(file);
 }
 
 bool VideoYUV::readOneFrame()
@@ -92,7 +92,7 @@ bool VideoYUV::readOneFrame()
 		if (read_size <= 0)
 			continue;
 		for (int i=0; i<comp_height[j]; i++) {
-			if (read(file, ptr_data, static_cast<size_t>(read_size)) != read_size) {
+			if (fread(ptr_data, 1, static_cast<size_t>(read_size), file) != static_cast<size_t>(read_size)) {
 				fprintf(stderr, "readOneFrame: cannot read %d bytes from input file, unexpected EOF.\n", read_size);
 				return false;
 			}

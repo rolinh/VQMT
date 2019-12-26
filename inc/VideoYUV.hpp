@@ -69,7 +69,7 @@ public:
 	// readOneFrame() needs to be called before getLuma()
 	void getLuma(cv::Mat& luma, int type = CV_8UC1);
 private:
-	int file;		// file stream
+	FILE* file;		// file stream
 	int nbframes;		// number of frames
 	int height;		// height
 	int width;		// width

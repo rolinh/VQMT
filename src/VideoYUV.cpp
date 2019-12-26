@@ -26,7 +26,11 @@
 
 VideoYUV::VideoYUV(const char *f, int h, int w, int nbf, int chroma_format)
 {
-	file = fopen(f, "rb");
+	if(strcmp(f, "-") == 0)
+		file = stdin;
+	else
+		file = fopen(f, "rb");
+		
 	if (!file) {
 		fprintf(stderr, "readOneFrame: cannot open input file (%s)\n", f);
 		exit(EXIT_FAILURE);
